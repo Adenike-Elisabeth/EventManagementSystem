@@ -1,8 +1,7 @@
 package com.nike.eventmanagementsystem.models.dtos.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 @Getter
@@ -17,5 +16,10 @@ public class LoginRequest {
     @Pattern(regexp = "^(?=.*[A-Z])(?=.*[!@#$%^&*()_+\\-=\\[\\]{};':\",.<>?]).*$", message =
             "Password must contain at least one uppercase letter and one special character")
     private String password;
-    private String email;
+
+
+    @NotEmpty(message = "Email must not be empty")
+    @NonNull
+    @Email(message = "Email must be in an email format")
+    private String emailAddress;
 }

@@ -6,19 +6,15 @@ import lombok.*;
 import java.time.LocalDate;
 
 @Data
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class SignupResponse {
-
-    private String status;
 
     private String message;
 
     private UserDto userDto;
 
-    private TokenResponse data;
 
     @Data
     @NoArgsConstructor

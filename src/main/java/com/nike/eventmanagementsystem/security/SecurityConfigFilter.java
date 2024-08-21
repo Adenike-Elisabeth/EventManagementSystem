@@ -33,7 +33,7 @@ public class SecurityConfigFilter {
 
     private final String[] WHITE_LIST = new String[]{
 
-            "/api/v1/authentification/**"
+            "/api/v1/authentication/**"
     };
 
     @Bean

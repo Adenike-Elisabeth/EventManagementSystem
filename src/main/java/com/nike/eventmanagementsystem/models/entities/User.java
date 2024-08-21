@@ -50,7 +50,7 @@ public class User implements UserDetails {
 
     private String password;
 
-    private Boolean enabled;
+    //private Boolean enabled;
 
     @CreationTimestamp
     @Column(updatable = false, name = "created_at")
@@ -94,6 +94,8 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return enabled;
+        return true;
     }
+
+
 }

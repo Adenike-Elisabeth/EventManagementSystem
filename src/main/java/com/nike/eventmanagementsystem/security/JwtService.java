@@ -11,10 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 @Service
@@ -45,7 +42,7 @@ public class JwtService {
         Map<String, Object> claims = new HashMap<>();
         claims.put("username", emailAddress);
         claims.put("userType", userType);
-        return generateToken(claims, userDetails);
+        return generateToken(userDetails);
     }
 
     public String generateRefreshTokenForUser(UserDetails userDetails, String emailAddress) {
@@ -69,16 +66,23 @@ public class JwtService {
                 .compact();
     }
 
-    public String generateToken(
-            Map<String, Object> extraClaims,
-            UserDetails userDetails
-    ) {
+//    public String generateToken(
+//            Map<String, Object> extraClaims,
+//            UserDetails userDetails
+//    ) {
+//        return buildToken(extraClaims, userDetails, jwtExpiration);
+//    }
+
+
+
+
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> extraClaims = new HashMap<>();
         return buildToken(extraClaims, userDetails, jwtExpiration);
     }
 
-    public String generateRefreshToken(
-            UserDetails userDetails
-    ) {
+
+    public String generateRefreshToken(UserDetails userDetails) {
         return buildToken(new HashMap<>(), userDetails, refreshExpiration);
     }
 
@@ -118,9 +122,18 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody();
     }
+//
+//    private Key getSignInKey() {
+//        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+//        return Keys.hmacShaKeyFor(keyBytes);
+//    }
 
     private Key getSignInKey() {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        // Example code to strip ENC(...) and decode the key inside
+        String trimmedKey = secretKey.substring(4, secretKey.length() - 1);
+        byte[] keyBytes = Base64.getDecoder().decode(trimmedKey);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
 }

@@ -1,9 +1,6 @@
 package com.nike.eventmanagementsystem.models.dtos.request;
 
 import com.nike.eventmanagementsystem.models.enums.UserType;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -22,6 +19,8 @@ public class SignupRequest {
     private String firstName;
 
     private String lastName;
+
+    private UserType role;
 
     private String emailAddress;
 
