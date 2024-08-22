@@ -35,12 +35,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
 
-
     @Override
     public SignupResponse registerUser(SignupRequest request) throws UserAlreadyExistsException {
         log.info("register Customer started");
         Optional<User> existingUser = userRepository.findByEmailAddress(request.getEmailAddress());
-
 
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("User with email " + request.getEmailAddress() + " already exists");
@@ -59,24 +57,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         }
     }
-
-
     private boolean isValidRole(UserType role) {
         // Check if the role is one of the defined enums
         return role == UserType.USER || role == UserType.ENTERTAINER;
     }
 
     private User createUser(SignupRequest request) {
+        if (!isValidRole(request.getRole())) {
+            throw new IllegalArgumentException("Invalid user role provided.");
+        }
+
         User user = new User();
         user.setFirstName(request.getFirstName());
-        //user.setEnabled(false);
-        user.setEmailAddress(request.getEmailAddress());
         user.setLastName(request.getLastName());
         user.setPhoneNumber(request.getPhoneNumber());
-        user.setRole(UserType.USER);
+        user.setEmailAddress(request.getEmailAddress());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setRole(request.getRole());
+
         return user;
     }
+
 
 @Transactional
 @Override
@@ -107,6 +108,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String jwtToken = jwtService.generateToken(user);
         String jwtRefToken = jwtService.generateRefreshToken(user);
 
+        log.info("User logged in successfully");
         return createLoginResponse(user, jwtToken, jwtRefToken);
     }
 
@@ -121,9 +123,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     private void validateUser(User user) throws WrongUserTypeException {
-        if (user.getRole() != UserType.USER) {
-            throw new WrongUserTypeException("Abegiii, you no suppose dey here");
+        // Validate against a list of acceptable roles
+        if (!isValidRole(user.getRole())) {
+            throw new WrongUserTypeException("Abegiii, Invalid role: " + user.getRole() + ". Access denied, i.e you no suppose dey here.");
         }
     }
-
-    }
+}
